@@ -15,8 +15,11 @@ final methodChannel = const MethodChannel(CHANNEL);
 @override
 Future<bool?> initializeDevice() async {
 
+    print("initializeDevice result ");
   try {
     final result = await methodChannel.invokeMethod<bool>(METHOD_INIT);
+
+    print("initializeDevice result 1 $result");
     return result;
   } on PlatformException catch (e) {
     throw _libException(e);

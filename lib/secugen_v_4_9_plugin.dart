@@ -8,6 +8,10 @@ class SecugenV49Plugin {
     return SecugenV49PluginPlatform.instance.initializeDevice();
   }
 
+  Future<String?> deviceVersion(){
+    return SecugenV49PluginPlatform.instance.deviceVersion();
+  }
+
   Future<void> enableLed(bool val) async {
     SecugenV49PluginPlatform.instance.enableLed(val);
   }

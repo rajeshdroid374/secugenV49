@@ -22,6 +22,9 @@ abstract class SecugenV49PluginPlatform extends PlatformInterface {
   Future<bool?> initializeDevice() {
     throw UnimplementedError('initializeDevice() has not been implemented.');
   }
+  Future<String?> deviceVersion() {
+    throw UnimplementedError('deviceVersion() has not been implemented.');
+  }
 
   Future<void> enableLed(bool val) {
     throw UnimplementedError('toggleLed() has not been implemented.');

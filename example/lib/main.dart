@@ -377,6 +377,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
     try {
       _isDeviceReady = await _secugenfplib.initializeDevice();
+
+      print("_initializeDevice _isDeviceReady $_isDeviceReady");
     } on SecugenV49Exception catch (e) {
       print(e.message);
       _showAlertDialog(context, e.message!);
@@ -414,12 +416,12 @@ class _MyHomePageState extends State<MyHomePage> {
     _fingerprintMatchString = 'NO STATUS AVAILABLE';
 
     try {
-      final captureResult = await _secugenfplib.captureFingerprintWithQuality(timeout: _timeout_ms, quality: _quality);
+      final captureResult = await _secugenfplib.captureFingerprintWithQuality(timeout: _timeout_ms, quality: _quality,auto: true );
       _fpRegisterBytes = captureResult!.imageBytes;
       _firstCaptureResult = captureResult;
     } on SecugenV49Exception catch (e) {
       print(e.message);
-      _showAlertDialog(context, e.message!);
+      _showAlertDialog(context, e.message.toString());
     }
 
     setState(() {});
@@ -431,7 +433,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _fingerprintMatchString = 'NO STATUS AVAILABLE';
 
     try {
-      final captureResult = await _secugenfplib.captureFingerprintWithQuality(timeout: _timeout_ms, quality: _quality);
+      final captureResult = await _secugenfplib.captureFingerprint(auto: true);
       _fpVerifyBytes = captureResult!.imageBytes;
       _secondCaptureResult = captureResult;
     } on SecugenV49Exception catch (e) {

@@ -211,6 +211,7 @@ public class SecugenV49Plugin implements FlutterPlugin, MethodChannel.MethodCall
         this.lifecycle =  ((LifecycleOwner) activityBinding.getActivity()).getLifecycle();
         this.lifecycle.addObserver(this.observer);
       }
+
     }
   }
 
@@ -319,7 +320,6 @@ public class SecugenV49Plugin implements FlutterPlugin, MethodChannel.MethodCall
     try {
       sgfplib = new JSGFPLib(activity.getApplicationContext(), (UsbManager) activity.getApplicationContext().getSystemService(Context.USB_SERVICE));
       autoOn = new SGAutoOnEventNotifier(sgfplib, this);
-
       PendingIntent mPermissionIntent;
       String ACTION_USB_PERMISSION = "com.rajeshwarinfotech.secugen_v_4_9_plugin.USB_PERMISSION";
 
@@ -335,30 +335,34 @@ public class SecugenV49Plugin implements FlutterPlugin, MethodChannel.MethodCall
       smartCaptureEnabled = false;
       captureWithQuality = false;
 
-      long error = sgfplib.Init(SGFDxDeviceName.SG_DEV_AUTO);
 
+      long error = sgfplib.Init(SGFDxDeviceName.SG_DEV_AUTO);
+      Log.e(TAG, "sgfplib.Init"+error);
       if(error != SGFDxErrorCode.SGFDX_ERROR_NONE) {
+      Log.e(TAG, "sgfplib.Init if "+error);
 
         String errorCode, errorMsg;
 
         if(error == SGFDxErrorCode.SGFDX_ERROR_DEVICE_NOT_FOUND) {
+          Log.e(TAG, "sgfplib.Init if SGFDX_ERROR_DEVICE_NOT_FOUND "+error);
           errorCode = ERROR_NOT_SUPPORTED;
           errorMsg = "The attached fingerprint device is not supported!";
         }
         else {
+          Log.e(TAG, "sgfplib.Init if ERROR_INITIALIZATION_FAILED "+error);
           errorCode = ERROR_INITIALIZATION_FAILED;
           errorMsg = "Fingerprint device initialization failed!";
         }
-
-        Log.e(TAG, errorMsg);
+        Log.e(TAG, "sgfplib.Init if errorMsg "+errorMsg);
+//        Log.e(TAG, errorMsg);
         initializeResult.error(errorCode, errorMsg, null);
         return;
       }
 
       UsbDevice usbDevice = sgfplib.GetUsbDevice();
-
+      Log.e(TAG, "sgfplib.Init usbDevice "+usbDevice.getProductName());
       if(usbDevice == null) {
-
+        Log.e(TAG, "sgfplib.Init usbDevice if "+usbDevice.getProductName());
         String errorMsg = "SecuGen fingerprint sensor not found!";
 
         Log.e(TAG, errorMsg);
@@ -367,18 +371,21 @@ public class SecugenV49Plugin implements FlutterPlugin, MethodChannel.MethodCall
       }
 
       boolean hasPermission = sgfplib.GetUsbManager().hasPermission(usbDevice);
-
+      Log.e(TAG, "sgfplib.Init usbDevice hasPermission "+hasPermission);
       if(!hasPermission) {
         Log.e(TAG, "Requesting USB Permission");
+
         sgfplib.GetUsbManager().requestPermission(usbDevice, mPermissionIntent);
         return;
       }
 
       Log.e(TAG, "Opening SecuGen Device");
 
-      error = sgfplib.OpenDevice(0);
 
+        error = sgfplib.OpenDevice(0);
+      Log.e(TAG, "sgfplib.Init usbDevice OpenDevice "+error);
       if(error == SGFDxErrorCode.SGFDX_ERROR_NONE) {
+      Log.e(TAG, "SGFDxErrorCode");
 
         isDeviceInitialized = true;
         SecuGen.FDxSDKPro.SGDeviceInfoParam deviceInfo = new SecuGen.FDxSDKPro.SGDeviceInfoParam();
@@ -404,9 +411,10 @@ public class SecugenV49Plugin implements FlutterPlugin, MethodChannel.MethodCall
         return;
       }
 
-      Log.e(TAG, "Waiting for USB Permission");
+      Log.e(TAG, "Waiting for USB Permission"+error);
     }
     catch (Exception e) {
+      Log.e(TAG, "initializeDevice Exception" + e.toString());
       //result already returned
     }
   }
